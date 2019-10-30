@@ -1,2 +1,5 @@
 *.pd_darwin
 *.o
+*.cmake
+*.make
+*.dylib
