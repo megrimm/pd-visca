@@ -1,4 +1,38 @@
-void visca_test(t_visca *x, t_floatarg f){
+/*
+ * VISCA(tm) Camera Control Library Test Program
+ * Copyright (C) 2002 Damien Douxchamps 
+ *
+ * Written by Damien Douxchamps <douxchamps@ieee.org>
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+#include "../visca/libvisca.h"
+#include <stdlib.h>
+#include <stdio.h>
+
+#include <fcntl.h> /* File control definitions */
+#include <errno.h> /* Error number definitions */
+
+#define EVI_D30
+
+/*------------------------------------------------------*/
+// TEST Visca
+/*------------------------------------------------------*/
+
+void visca_test(t_visca *x, t_symbol *s){
 	
     VISCAInterface_t iface;
     VISCACamera_t camera;
