@@ -20,6 +20,7 @@ typedef struct _visca {
 	VISCACamera_t camera;
 } t_visca;
 
+
 /*-------------------------------------------*/
 // Print Object usage
 /*-------------------------------------------*/
@@ -30,6 +31,7 @@ void visca_print_usage_bang() {
 }
 /*-------------------------------------------*/
 
+
 /*-------------------------------------------*/
 // Print Object info
 /*-------------------------------------------*/
@@ -39,6 +41,7 @@ void visca_info(){
 		"megrimm 2019\n");
 }
 /*-------------------------------------------*/
+
 
 /*-------------------------------------------*/
 // Enumerate Com Devices (uses libserialport)
@@ -60,6 +63,7 @@ static void visca_lstdevs() {
     post("");
 }
 /*-------------------------------------------*/
+
 
 /*-------------------------------------------*/
 // Open Visca Interface
@@ -113,6 +117,7 @@ void visca_opencom(t_visca *x, t_symbol *s, int argc, t_atom *argv) {
 }
 /*------------------------------------------------------*/
 
+
 /*-------------------------------------------*/
 // Close Visca Interface
 /*-------------------------------------------*/
@@ -136,6 +141,7 @@ void visca_closecom(t_visca *x){
 }
 /*-------------------------------------------*/
 
+
 /*------------------------------------------------------*/
 // Process Commands
 /*------------------------------------------------------*/
@@ -148,13 +154,13 @@ char *process_command(int argc, char **argv) {
   char *command;
   /*at least a command has to be specified*/
   if (argc < 2) {
- //   print_usage();
-	  visca_print_usage_bang();
+	//  visca_print_usage_bang();
   }
   /*find total length of command*/
   length = 0;
   for (i=1; i < argc; i++) {
     length += strlen(argv[i])+1;
+	post(length);
   }
   /*allocate memory for command*/
   command = (char *)malloc(sizeof(char) * length);
@@ -169,59 +175,6 @@ char *process_command(int argc, char **argv) {
 }
 /*------------------------------------------------------*/
 
-/*------------------------------------------------------*/
-// Send Commands
-/*------------------------------------------------------*/
-int visca_send_command(int argc, char **argv) {
-  char *command;
-  int errorcode, ret1, ret2, ret3;
-
-  command = process_command(argc, argv);
-
-  errorcode = doCommand(command, &ret1, &ret2, &ret3);
-  switch(errorcode) {
-    case 10:
-      printf("10 OK - no return value\n");
-      break;
-    case 11:
-      printf("11 OK - one return value\nRET1: %i\n", ret1);
-      break;    
-    case 12:
-      printf("12 OK - two return values\nRET1: %i\nRET2: %i\n", ret1, ret2);
-      break;
-    case 13:
-      printf("13 OK - three return values\nRET1: %i\nRET2: %i\nRET3: %i\n", 
-             ret1, ret2, ret3);
-      break;
-    case 40:
-      printf("40 ERROR - command not recognized\n");
-      break;
-    case 41:
-      printf("41 ERROR - argument 1 not recognized\n");
-      break;
-    case 42:
-      printf("42 ERROR - argument 2 not recognized\n");
-      break;
-    case 43:
-      printf("43 ERROR - argument 3 not recognized\n");
-      break;
-    case 44:
-      printf("44 ERROR - argument 4 not recognized\n");
-      break;
-    case 45:
-      printf("45 ERROR - argument 5 not recognized\n");
-      break;
-    case 46:
-      printf("46 ERROR - camera replied with an error\n");
-      break;
-    case 47:
-      printf("47 ERROR - camera replied with an unknown return value\n");
-      break;
-    default:
-      printf("unknown error code: %i\n", errorcode);
-  }
-}
-/*------------------------------------------------------*/
 
 /*------------------------------------------------------*/
 // Commands
@@ -332,6 +285,63 @@ int doCommand(t_visca *x, char *commandline, int *ret1, int *ret2, int *ret3) {
 }
 /*------------------------------------------------------*/
 
+
+/*------------------------------------------------------*/
+// Send Commands
+/*------------------------------------------------------*/
+int visca_sendcom(t_visca *x, int argc, t_atom *argv) {
+  char *command;
+  int errorcode, ret1, ret2, ret3;
+
+  command = process_command(argc, argv);
+  //post(command);
+  /*
+  errorcode = doCommand(x, command, &ret1, &ret2, &ret3);
+  switch(errorcode) {
+    case 10:
+      printf("10 OK - no return value\n");
+      break;
+    case 11:
+      printf("11 OK - one return value\nRET1: %i\n", ret1);
+      break;    
+    case 12:
+      printf("12 OK - two return values\nRET1: %i\nRET2: %i\n", ret1, ret2);
+      break;
+    case 13:
+      printf("13 OK - three return values\nRET1: %i\nRET2: %i\nRET3: %i\n", 
+             ret1, ret2, ret3);
+      break;
+    case 40:
+      printf("40 ERROR - command not recognized\n");
+      break;
+    case 41:
+      printf("41 ERROR - argument 1 not recognized\n");
+      break;
+    case 42:
+      printf("42 ERROR - argument 2 not recognized\n");
+      break;
+    case 43:
+      printf("43 ERROR - argument 3 not recognized\n");
+      break;
+    case 44:
+      printf("44 ERROR - argument 4 not recognized\n");
+      break;
+    case 45:
+      printf("45 ERROR - argument 5 not recognized\n");
+      break;
+    case 46:
+      printf("46 ERROR - camera replied with an error\n");
+      break;
+    case 47:
+      printf("47 ERROR - camera replied with an unknown return value\n");
+      break;
+    default:
+      printf("unknown error code: %i\n", errorcode);
+  }
+  */
+}
+/*------------------------------------------------------*/
+
 /*------------------------------------------------------*/
 // TESTS (Other)
 /*------------------------------------------------------*/
@@ -422,6 +432,8 @@ void visca_setup(void){
 		class_addmethod(visca_class, (t_method)visca_opencom, gensym("open"),A_GIMME, 0);
 		// Close Interface
 		class_addmethod(visca_class, (t_method)visca_closecom, gensym("close"), 0);
+		// Send Command
+		class_addmethod(visca_class, (t_method)visca_sendcom, gensym("send"),A_GIMME, 0);
 		// Test Paning After Connection Open
 		class_addmethod(visca_class, (t_method)visca_pantest, gensym("pan"), 0);
 		
